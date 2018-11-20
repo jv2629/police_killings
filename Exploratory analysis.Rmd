@@ -9,3 +9,13 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+Read in main data set from fivethirtyeight github repository on police killings.
+```{r}
+library(tidyverse)
+require(RCurl)
+
+raw_data = read_csv(
+        "https://raw.githubusercontent.com/fivethirtyeight/data/master/police-killings/police_killings.csv"
+      )
+```
+
