@@ -19,3 +19,30 @@ raw_data = read_csv(
       )
 ```
 
+A look into the cities...
+```{r}
+city_data = raw_data %>% 
+  mutate(city_state = paste(city, state, sep = ", ")) %>% 
+  group_by(city_state) %>% 
+  summarise(total_killed = n())
+```
+
+Found that most cities have 1 killing in 2015. LA had the most with 9. This is not promising for an analysis that has depth of understanding. 
+
+Looking to download data from same resource for 2016. The website has a downloadable csv. Formatted exactly the same. Only missing census data. 
+
+```{r}
+raw_2016 = read_csv("./data/the-counted-2016.csv")
+
+```
+
+Just looking at the raw data there is a huge increase from 467 killings in 2015 to 1093 in 2016. 
+
+```{r}
+city_data_16 = raw_2016 %>% 
+  mutate(city_state = paste(city, state, sep = ", ")) %>% 
+  group_by(city_state) %>% 
+  summarise(total_killed = n())
+```
+
+LA stays the top but more than doubles in deaths. Houston and Pheonix trade places but remain 2 and 3. All the numbers for the top have double or quadroupled. 
