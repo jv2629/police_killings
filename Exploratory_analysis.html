@@ -218,6 +218,8 @@ $(document).ready(function () {
 </div>
 
 
+<div id="first-look-at-city-level" class="section level1">
+<h1>First look at City level</h1>
 <p>Read in main data set from fivethirtyeight github repository on police killings.</p>
 <pre class="r"><code>library(tidyverse)</code></pre>
 <pre><code>## ── Attaching packages ────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
@@ -292,6 +294,27 @@ $(document).ready(function () {
   group_by(city_state) %&gt;% 
   summarise(total_killed = n())</code></pre>
 <p>LA stays the top but more than doubles in deaths. Houston and Pheonix trade places but remain 2 and 3. All the numbers for the top have double or quadroupled.</p>
+<pre class="r"><code>raw_2016 = raw_2016 %&gt;% 
+  mutate(cause = classification)
+
+raw_combined = bind_rows(raw_data, raw_2016)
+
+city_data = city_data %&gt;% 
+  mutate(year = 2015)
+
+city_data_16 = city_data_16 %&gt;% 
+  mutate(year = 2016)
+
+city_combined = bind_rows(city_data, city_data_16) %&gt;% 
+  mutate(year = as.factor(year))</code></pre>
+<pre class="r"><code>top_cities = city_combined %&gt;% 
+ top_n(20, total_killed)
+
+ggplot(top_cities, aes(fill = year, x = city_state, y = total_killed)) + geom_bar(position=&quot;dodge&quot;, stat=&quot;identity&quot;) +
+  theme(axis.text.x = element_text(angle = 80, hjust = 1))</code></pre>
+<p><img src="Exploratory_analysis_files/figure-html/plot%20killings-1.png" width="672" /></p>
+<p>Most of the Top 20 for police killings occured in 2016. The top 3 in 2016 also made the Top 20 overall. Looks like # 1 in 2015 would be 6 in 2016.</p>
+</div>
 
 
 
