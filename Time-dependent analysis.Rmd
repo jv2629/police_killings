@@ -30,11 +30,10 @@ raw_data %>%
 
 ```
 
+
 #Plan:
 - Geom_point plot of killings in y axis vs time in x axis
 - Date w highest number of killings (or month), location(s) in which they occurred
 - Density plot of killings over time
 - Map of killings w date
 - If counties/states have multiple, single these out
-
-
