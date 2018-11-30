@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="Nathalie Fadel" />
+
+
+<title>Exploratory analysis</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.0.13/css/fa-svg-with-js.css" rel="stylesheet" />
+<script src="site_libs/font-awesome-5.0.13/js/fontawesome-all.min.js"></script>
+<script src="site_libs/font-awesome-5.0.13/js/fa-v4-shims.min.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Home</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="mailto:&lt;you@youremail.com&gt;">
+    <span class="fa fa-envelope fa-lg"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="http://github.com/&lt;YOUR_GH_NAME&gt;/">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Exploratory analysis</h1>
+<h4 class="author"><em>Nathalie Fadel</em></h4>
+<h4 class="date"><em>11/7/2018</em></h4>
+
+</div>
+
+
+<div id="first-look-at-city-level" class="section level1">
+<h1>First look at City level</h1>
+<p>Read in main data set from fivethirtyeight github repository on police killings.</p>
+<pre class="r"><code>library(tidyverse)</code></pre>
+<pre><code>## ── Attaching packages ────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
+<pre><code>## ✔ ggplot2 3.0.0     ✔ purrr   0.2.5
+## ✔ tibble  1.4.2     ✔ dplyr   0.7.6
+## ✔ tidyr   0.8.1     ✔ stringr 1.3.1
+## ✔ readr   1.1.1     ✔ forcats 0.3.0</code></pre>
+<pre><code>## ── Conflicts ───────────────────────────────────────── tidyverse_conflicts() ──
+## ✖ dplyr::filter() masks stats::filter()
+## ✖ dplyr::lag()    masks stats::lag()</code></pre>
+<pre class="r"><code>require(RCurl)</code></pre>
+<pre><code>## Loading required package: RCurl</code></pre>
+<pre><code>## Loading required package: bitops</code></pre>
+<pre><code>## 
+## Attaching package: &#39;RCurl&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:tidyr&#39;:
+## 
+##     complete</code></pre>
+<pre class="r"><code>raw_data = read_csv(
+        &quot;https://raw.githubusercontent.com/fivethirtyeight/data/master/police-killings/police_killings.csv&quot;
+      )</code></pre>
+<pre><code>## Parsed with column specification:
+## cols(
+##   .default = col_character(),
+##   day = col_integer(),
+##   year = col_integer(),
+##   latitude = col_double(),
+##   longitude = col_double(),
+##   state_fp = col_integer(),
+##   county_fp = col_integer(),
+##   tract_ce = col_integer(),
+##   geo_id = col_double(),
+##   county_id = col_integer(),
+##   pop = col_integer(),
+##   h_income = col_integer(),
+##   county_income = col_integer(),
+##   comp_income = col_double(),
+##   county_bucket = col_integer(),
+##   nat_bucket = col_integer(),
+##   urate = col_double(),
+##   college = col_double()
+## )</code></pre>
+<pre><code>## See spec(...) for full column specifications.</code></pre>
+<p>A look into the cities…</p>
+<pre class="r"><code>city_data = raw_data %&gt;% 
+  mutate(city_state = paste(city, state, sep = &quot;, &quot;)) %&gt;% 
+  group_by(city_state) %&gt;% 
+  summarise(total_killed = n())</code></pre>
+<p>Found that most cities have 1 killing in 2015. LA had the most with 9. This is not promising for an analysis that has depth of understanding.</p>
+<p>Looking to download data from same resource for 2016. The website has a downloadable csv. Formatted exactly the same. Only missing census data.</p>
+<pre class="r"><code>raw_2016 = read_csv(&quot;./data/the-counted-2016.csv&quot;)</code></pre>
+<pre><code>## Parsed with column specification:
+## cols(
+##   uid = col_integer(),
+##   name = col_character(),
+##   age = col_character(),
+##   gender = col_character(),
+##   raceethnicity = col_character(),
+##   month = col_character(),
+##   day = col_integer(),
+##   year = col_integer(),
+##   streetaddress = col_character(),
+##   city = col_character(),
+##   state = col_character(),
+##   classification = col_character(),
+##   lawenforcementagency = col_character(),
+##   armed = col_character()
+## )</code></pre>
+<p>Just looking at the raw data there is a huge increase from 467 killings in 2015 to 1093 in 2016.</p>
+<pre class="r"><code>city_data_16 = raw_2016 %&gt;% 
+  mutate(city_state = paste(city, state, sep = &quot;, &quot;)) %&gt;% 
+  group_by(city_state) %&gt;% 
+  summarise(total_killed = n())</code></pre>
+<p>LA stays the top but more than doubles in deaths. Houston and Pheonix trade places but remain 2 and 3. All the numbers for the top have double or quadroupled.</p>
+<pre class="r"><code>raw_2016 = raw_2016 %&gt;% 
+  mutate(cause = classification)
+
+raw_combined = bind_rows(raw_data, raw_2016)
+
+city_data = city_data %&gt;% 
+  mutate(year = 2015)
+
+city_data_16 = city_data_16 %&gt;% 
+  mutate(year = 2016)
+
+city_combined = bind_rows(city_data, city_data_16) %&gt;% 
+  mutate(year = as.factor(year))</code></pre>
+<pre class="r"><code>top_cities = city_combined %&gt;% 
+ top_n(20, total_killed)
+
+ggplot(top_cities, aes(fill = year, x = city_state, y = total_killed)) + geom_bar(position=&quot;dodge&quot;, stat=&quot;identity&quot;) +
+  theme(axis.text.x = element_text(angle = 80, hjust = 1))</code></pre>
+<p><img src="Exploratory_analysis_files/figure-html/plot%20killings-1.png" width="672" /></p>
+<p>Most of the Top 20 for police killings occured in 2016. The top 3 in 2016 also made the Top 20 overall. Looks like # 1 in 2015 would be 6 in 2016.</p>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

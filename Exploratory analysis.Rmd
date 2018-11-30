@@ -9,3 +9,69 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+#First look at City level 
+
+Read in main data set from fivethirtyeight github repository on police killings.
+```{r github data}
+library(tidyverse)
+require(RCurl)
+
+raw_data = read_csv(
+        "https://raw.githubusercontent.com/fivethirtyeight/data/master/police-killings/police_killings.csv"
+      )
+```
+
+A look into the cities...
+```{r clean github}
+city_data = raw_data %>% 
+  mutate(city_state = paste(city, state, sep = ", ")) %>% 
+  group_by(city_state) %>% 
+  summarise(total_killed = n())
+```
+
+Found that most cities have 1 killing in 2015. LA had the most with 9. This is not promising for an analysis that has depth of understanding. 
+
+Looking to download data from same resource for 2016. The website has a downloadable csv. Formatted exactly the same. Only missing census data. 
+
+```{r load 2016 data}
+raw_2016 = read_csv("./data/the-counted-2016.csv")
+
+```
+
+Just looking at the raw data there is a huge increase from 467 killings in 2015 to 1093 in 2016. 
+
+```{r clean 2016 data}
+city_data_16 = raw_2016 %>% 
+  mutate(city_state = paste(city, state, sep = ", ")) %>% 
+  group_by(city_state) %>% 
+  summarise(total_killed = n())
+```
+
+LA stays the top but more than doubles in deaths. Houston and Pheonix trade places but remain 2 and 3. All the numbers for the top have double or quadroupled. 
+
+```{r combine data}
+raw_2016 = raw_2016 %>% 
+  mutate(cause = classification)
+
+raw_combined = bind_rows(raw_data, raw_2016)
+
+city_data = city_data %>% 
+  mutate(year = 2015)
+
+city_data_16 = city_data_16 %>% 
+  mutate(year = 2016)
+
+city_combined = bind_rows(city_data, city_data_16) %>% 
+  mutate(year = as.factor(year))
+```
+
+```{r plot killings}
+top_cities = city_combined %>% 
+ top_n(20, total_killed)
+
+ggplot(top_cities, aes(fill = year, x = city_state, y = total_killed)) + geom_bar(position="dodge", stat="identity") +
+  theme(axis.text.x = element_text(angle = 80, hjust = 1))
+```
+
+Most of the Top 20 for police killings occured in 2016. The top 3 in 2016 also made the Top 20 overall. Looks like # 1 in 2015 would be 6 in 2016. 
+
