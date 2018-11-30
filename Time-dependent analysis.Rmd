@@ -17,16 +17,30 @@ library(tidyverse)
 raw_data = read_csv("https://raw.githubusercontent.com/fivethirtyeight/data/master/police-killings/police_killings.csv") %>%
   janitor::clean_names()
 
-#Need to make month, day, year into one numeric "date" variable.
-
-raw_data %>%
+clean_data = raw_data %>%
   mutate(month = factor(month, levels = c("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December")),
-         year = as.integer(year)) %>%
-  gather(key = date, value = date_char, month:year) %>%
-  mutate(date = str_replace(date_char, "month", "day", "year", "")) %>%
-  mutate(date = as.Date.numeric(date))
+         year = as.integer(year))
 
-#this isn't working
+clean_data %>%
+  group_by(month) %>%
+  summarise(total_killed = n()) %>%
+  ggplot(aes(x = month, y=total_killed)) +
+  geom_col(size = 3) +
+  labs(x = "Month", y = "number", 
+       caption = "number of police killings by month, Jan-June 2015") 
+
+date_data = clean_data %>%
+  mutate(month = as.integer(month)) %>%
+  mutate(date = paste(month, day, year, sep = "-")) %>%
+  mutate(date = as.Date(date, "%m-%d-%Y"))
+
+date_data %>%
+  group_by(date) %>%
+  summarise(total_killed = n()) %>%
+  ggplot(aes(x = date, y=total_killed)) +
+  geom_line(size = 0.5) +
+  labs(x = "date", y = "number", 
+       caption = "number of police killings over time, Jan-June 2015")
 
 ```
 
