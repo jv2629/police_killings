@@ -1,0 +1,25 @@
+---
+title: "Time-dependent analysis"
+author: "Nathalie Fadel"
+date: "11/30/2018"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+
+raw_data = read_csv("https://raw.githubusercontent.com/fivethirtyeight/data/master/police-killings/police_killings.csv") %>%
+  janitor::clean_names()
+
+#Need to make month, day, year into one "date" variable.
+
+raw_data %>%
+  gather(key = date, value = "month",)
+
+
+```
+
+
+
