@@ -9,17 +9,32 @@ output: github_document
 knitr::opts_chunk$set(echo = TRUE)
 
 library(tidyverse)
+```
+
+#Data import and cleaning  
+```{r}
 
 raw_data = read_csv("https://raw.githubusercontent.com/fivethirtyeight/data/master/police-killings/police_killings.csv") %>%
   janitor::clean_names()
 
-#Need to make month, day, year into one "date" variable.
+#Need to make month, day, year into one numeric "date" variable.
 
 raw_data %>%
-  gather(key = date, value = "month",)
+  mutate(month = factor(month, levels = c("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December")),
+         year = as.integer(year)) %>%
+  gather(key = date, value = date_char, month:year) %>%
+  mutate(date = str_replace(date_char, "month", "day", "year", "")) %>%
+  mutate(date = as.Date.numeric(date))
 
+#this isn't working
 
 ```
 
+#Plan:
+- Geom_point plot of killings in y axis vs time in x axis
+- Date w highest number of killings (or month), location(s) in which they occurred
+- Density plot of killings over time
+- Map of killings w date
+- If counties/states have multiple, single these out
 
 
