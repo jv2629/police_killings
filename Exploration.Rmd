@@ -1,0 +1,49 @@
+---
+title: "Exploratory Analysis"
+author: "Chirag Shah"
+date: '2018-12-02'
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+```
+
+Time to do some exploration!
+
+```{r}
+homicides_data = read_csv("https://raw.githubusercontent.com/fivethirtyeight/data/master/police-killings/police_killings.csv") %>%
+  janitor::clean_names()
+
+homicides_data = homicides_data %>%
+  mutate(month = factor(month, levels = c("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December")),
+         year = as.integer(year))
+
+homicides_data %>%
+  group_by(state) %>%
+  summarise(total_killed = n()) %>%
+  mutate(state = forcats::fct_reorder(state, total_killed)) %>%
+  ggplot(aes(x = state, y = total_killed)) +
+  geom_col(size = 3) +
+  labs(x = "State", y = "Killings", 
+       caption = "number of police killings in each state, Jan-June 2015") +
+  theme(axis.text.x = element_text(angle = 90))
+
+homicides_data %>%
+  group_by(raceethnicity) %>%
+  summarise(total_killed = n()) %>%
+  mutate(raceethnicity = forcats::fct_reorder(raceethnicity, total_killed)) %>%
+  ggplot(aes(x = raceethnicity, y = total_killed)) +
+  geom_col(size = 3) +
+  labs(x = "State", y = "Killings", 
+       caption = "number of police killings in each state, Jan-June 2015") +
+  theme(axis.text.x = element_text(angle = 90))
+
+homicides_data %>% 
+  summarise(mean_killed = n()/47)
+
+
+```
+
