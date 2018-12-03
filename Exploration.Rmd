@@ -32,6 +32,14 @@ homicides_data %>%
   theme(axis.text.x = element_text(angle = 90))
 
 homicides_data %>%
+  group_by(state) %>%
+  summarise(total_killed = n()) %>%
+  summarise(mean_killed = mean(total_killed)) %>% 
+  mutate(std_error = stderr()) %>% 
+  mutate(upper_bound = mean_killed + 1.96 * std_error,
+         lower_bound = mean_killed - 1.96 * std_error)
+
+homicides_data %>%
   group_by(raceethnicity) %>%
   summarise(total_killed = n()) %>%
   mutate(raceethnicity = forcats::fct_reorder(raceethnicity, total_killed)) %>%
@@ -41,9 +49,14 @@ homicides_data %>%
        caption = "number of police killings in each state, Jan-June 2015") +
   theme(axis.text.x = element_text(angle = 90))
 
-homicides_data %>% 
-  summarise(mean_killed = n()/47)
-
+homicides_data = homicides_data %>% 
+mutate(agecat = if (age < 19) {1
+} else if (19 < age < 28) {2
+} else if (29 < age < 38) {3
+} else if (39 < age < 48) {4
+} else if (49 < age < 58) {5
+} else if (59 < age < 68) {6
+} else (7))
 
 ```
 
