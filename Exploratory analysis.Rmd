@@ -14,6 +14,7 @@ knitr::opts_chunk$set(echo = TRUE)
 Read in main data set from fivethirtyeight github repository on police killings.
 ```{r github data}
 library(tidyverse)
+library(reshape2)
 require(RCurl)
 
 raw_data = read_csv(
@@ -97,7 +98,7 @@ plot_cause[is.na(plot_cause)] <- 0
 plot_cause1 = plot_cause %>% 
   janitor::clean_names() %>% 
   gather(key = cause, value = freq, death_in_custody:taser) %>% 
-  ggplot(aes(fill = cause, x = city, y = freq)) + geom_bar(position = "dodge", stat = "identity") + labs(x = "City", y = "Frequency", title = "Cause of Death by Police Weapon") + scale_fill_brewer(palette = "Set2") + caption = "2015-2016"
+  ggplot(aes(fill = cause, x = city, y = freq)) + geom_bar(position = "dodge", stat = "identity") + labs(x = "City", y = "Frequency", title = "Cause of Death by Police Weapon", caption = "2015-2016") + scale_fill_brewer(palette = "Set2") 
   
 plot_cause1
 ```
@@ -113,11 +114,12 @@ plot_armed = city_depth_data %>%
 plot_armed[is.na(plot_armed)] <- 0
 
 plot_armed1 = plot_armed %>% 
-  janitor::clean_names() %>% 
+  janitor::clean_names() %>%
   rename(unarmed = no) %>% 
   gather(key = armed, value = freq, firearm:vehicle) %>% 
-  ggplot(aes(fill = armed, x = city, y = freq)) + geom_bar(position = "dodge", stat = "identity") + labs(x = "City", y = "Frequency", title = "Victim Armed with a Weapon") + scale_fill_brewer(palette = "Set2") + caption = "2015-2016"
+  ggplot(aes(fill = armed, x = city, y = freq)) + geom_bar(position = "dodge", stat = "identity") + labs(x = "City", y = "Frequency", title = "Victim Armed with a Weapon", caption = "2015-2016") + scale_fill_brewer(palette = "Set2") 
   
 plot_armed1
 ```
+
 

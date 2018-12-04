@@ -230,6 +230,12 @@ $(document).ready(function () {
 <pre><code>## ── Conflicts ────────────────────────────────────────────────────────── tidyverse_conflicts() ──
 ## ✖ dplyr::filter() masks stats::filter()
 ## ✖ dplyr::lag()    masks stats::lag()</code></pre>
+<pre class="r"><code>library(reshape2)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;reshape2&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:tidyr&#39;:
+## 
+##     smiths</code></pre>
 <pre class="r"><code>require(RCurl)</code></pre>
 <pre><code>## Loading required package: RCurl</code></pre>
 <pre><code>## Loading required package: bitops</code></pre>
@@ -319,6 +325,7 @@ ggplot(top_cities, aes(fill = year, x = city_state, y = total_killed)) + geom_ba
 </div>
 <div id="cities-in-depth" class="section level1">
 <h1>Cities in Depth</h1>
+<p>Cause of Death by Police.</p>
 <pre class="r"><code>city_depth_data = raw_combined %&gt;% 
   filter(city %in% c( &quot;Los Angeles&quot;, &quot;Houston&quot;, &quot;Phoenix&quot;, &quot;Chicago&quot;, &quot;San Antonio&quot;)) %&gt;% 
   mutate(cause = as.factor(cause),
@@ -335,10 +342,27 @@ plot_cause[is.na(plot_cause)] &lt;- 0
 plot_cause1 = plot_cause %&gt;% 
   janitor::clean_names() %&gt;% 
   gather(key = cause, value = freq, death_in_custody:taser) %&gt;% 
-  ggplot(aes(fill = cause, x = city, y = freq)) + geom_bar(position = &quot;dodge&quot;, stat = &quot;identity&quot;) + labs(x = &quot;City&quot;, y = &quot;Frequency&quot;, title = &quot;Cause of Death by Police Weapon&quot;) + scale_fill_brewer(palette = &quot;Set2&quot;)
+  ggplot(aes(fill = cause, x = city, y = freq)) + geom_bar(position = &quot;dodge&quot;, stat = &quot;identity&quot;) + labs(x = &quot;City&quot;, y = &quot;Frequency&quot;, title = &quot;Cause of Death by Police Weapon&quot;, caption = &quot;2015-2016&quot;) + scale_fill_brewer(palette = &quot;Set2&quot;) 
   
 plot_cause1</code></pre>
 <p><img src="Exploratory_analysis_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+<p>Victim armed.</p>
+<pre class="r"><code>plot_armed = city_depth_data %&gt;% 
+  select(city, armed) %&gt;% 
+  group_by(city, armed) %&gt;% 
+  summarise(freq = n()) %&gt;% 
+  spread(key = armed, value = freq) 
+
+plot_armed[is.na(plot_armed)] &lt;- 0
+
+plot_armed1 = plot_armed %&gt;% 
+  janitor::clean_names() %&gt;%
+  rename(unarmed = no) %&gt;% 
+  gather(key = armed, value = freq, firearm:vehicle) %&gt;% 
+  ggplot(aes(fill = armed, x = city, y = freq)) + geom_bar(position = &quot;dodge&quot;, stat = &quot;identity&quot;) + labs(x = &quot;City&quot;, y = &quot;Frequency&quot;, title = &quot;Victim Armed with a Weapon&quot;, caption = &quot;2015-2016&quot;) + scale_fill_brewer(palette = &quot;Set2&quot;) 
+  
+plot_armed1</code></pre>
+<p><img src="Exploratory_analysis_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
 </div>
 
 
