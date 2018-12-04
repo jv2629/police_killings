@@ -9,6 +9,11 @@ Police killings of citizens has been a point of tension in American culture over
 ```{r include=FALSE}
 library(tidyverse)
 library(wesanderson)
+knitr::opts_chunk$set(
+  fig.width = 7,
+  fig.asp = .7,
+  out.width = "100%"
+)
 ```
 
 ```{r echo=FALSE, message=FALSE}
@@ -25,7 +30,8 @@ map_data2 = raw_data %>%
   theme(panel.background = element_rect(fill = "grey",
                                 colour = "grey",
                                 size = 0.5, linetype = "solid"),
-        legend.position = "bottom") +
+        legend.position = "bottom",
+        ) +
   labs(title = "Police Killings Across the US", color = "Race/Ethnicity")
 
 map_data2
