@@ -2,8 +2,6 @@
 title: "About"
 ---
 
-### About this site
+### Final Project for Data Science Course
 
-Sometimes you need to say a bit about the site -- how it was made, where it's hosted, where the source code can be found. 
-
-If this is for a project or analysis, I recommend giving some details about the R package versions that you used to create the content.
+This data analysis was created by graduate students at the Mailman School of Public Health, taking the Data Science Course - Nathalie Fadel, Chirag Shahs, Jeanette Shekelle, Jaclyn Verity.
