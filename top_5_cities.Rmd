@@ -1,0 +1,84 @@
+---
+title: "The Top 5 Cities"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r include=FALSE}
+
+library(tidyverse)
+library(reshape2)
+require(RCurl)
+
+raw_data = read_csv(
+        "https://raw.githubusercontent.com/fivethirtyeight/data/master/police-killings/police_killings.csv"
+      )
+
+clean_2015 = raw_data %>% 
+  mutate(month = factor(month, levels = c("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December")),
+         year = as.integer(year))
+
+city_depth_data = clean_2015 %>% 
+  filter(city %in% c( "Los Angeles", "Houston", "Phoenix", "Chicago", "San Antonio")) %>% 
+  mutate(cause = as.factor(cause),
+         armed = as.factor(armed))
+```
+
+
+While we hope to identify patterns across the US, the sample in most cities is relatively small. Here we take an interesting look into the 5 cities with the most police killings in 2015. 
+
+```{r  echo=FALSE}
+top_5_cities = city_depth_data %>% 
+  group_by(city) %>% 
+  summarise(total_killed = n()) %>% 
+  top_n(5, total_killed) %>% 
+  arrange(-total_killed) %>%
+  rename(City = city) %>% 
+  rename(Killed = total_killed) %>% 
+  knitr::kable()
+
+top_5_cities
+```
+
+Most of us assume police kill with their guns. This graph shows us that the assumption is mostly accurate. In the top 5 cities for police killings death by gunshot was by far the most common cause of death for the victim. 
+
+```{r echo=FALSE}
+plot_cause = city_depth_data %>% 
+  select(city, cause, year) %>% 
+  group_by(city, cause) %>% 
+  summarise(freq = n()) %>% 
+  spread(key = cause, value = freq) 
+
+plot_cause[is.na(plot_cause)] <- 0
+
+plot_cause1 = plot_cause %>% 
+  janitor::clean_names() %>% 
+  gather(key = cause, value = freq, gunshot:taser) %>% 
+  ggplot(aes(fill = cause, x = city, y = freq)) + geom_bar(position = "dodge", stat = "identity") + labs(x = "City", y = "Frequency", title = "Cause of Death by Police Weapon", caption = "Jan-Jun 2015") + scale_fill_brewer(palette = "Set2") 
+  
+plot_cause1
+```
+
+Another point of tension portrayed in the media is whether or not the victim was armed. Here we can see that the victim was often unarmed. In Houston all but 1 victim were unarmed. In San Antonio the victim was never unarmed. 
+
+```{r echo=FALSE}
+plot_armed = city_depth_data %>% 
+  select(city, armed) %>% 
+  group_by(city, armed) %>% 
+  summarise(freq = n()) %>% 
+  spread(key = armed, value = freq) 
+
+plot_armed[is.na(plot_armed)] <- 0
+
+plot_armed1 = plot_armed %>% 
+  janitor::clean_names() %>%
+  rename(unarmed = no) %>% 
+  gather(key = armed, value = freq, firearm:vehicle) %>% 
+  ggplot(aes(fill = armed, x = city, y = freq)) + geom_bar(position = "dodge", stat = "identity") + labs(x = "City", y = "Frequency", title = "Victim Armed with a Weapon", caption = "Jan - Jun 2015") + scale_fill_brewer(palette = "Set2") 
+  
+plot_armed1
+```
+

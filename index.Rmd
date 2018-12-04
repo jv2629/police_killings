@@ -1,7 +1,7 @@
 ---
-title: "Holy cow!"
+title: "Factors Associated with Police Killings in America"
 ---
+##2015-2016
+<img src = "data/police_badge_gun.jpg" style = "width:100%"; align="center">
 
-### I have a webpage!
-
-And I can put all kinds of stuff on it!
+Police killings of citizens has been a point of tension in American culture over the past few years. With recent high profile police killings of African Americans like Eric Garner, Michael Brown Jr., Freddie Gray, Philando Castile and many others, we were interested in looking into what the data tells us about recent police killings. 

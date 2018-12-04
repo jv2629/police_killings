@@ -9,7 +9,7 @@
 <meta name="generator" content="pandoc" />
 
 
-<meta name="author" content="Nathalie Fadel" />
+<meta name="author" content="Jaclyn Verity" />
 
 
 <title>Exploratory analysis</title>
@@ -212,7 +212,7 @@ $(document).ready(function () {
 
 
 <h1 class="title toc-ignore">Exploratory analysis</h1>
-<h4 class="author"><em>Nathalie Fadel</em></h4>
+<h4 class="author"><em>Jaclyn Verity</em></h4>
 <h4 class="date"><em>11/7/2018</em></h4>
 
 </div>
@@ -222,14 +222,20 @@ $(document).ready(function () {
 <h1>First look at City level</h1>
 <p>Read in main data set from fivethirtyeight github repository on police killings.</p>
 <pre class="r"><code>library(tidyverse)</code></pre>
-<pre><code>## ── Attaching packages ────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
+<pre><code>## ── Attaching packages ─────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
 <pre><code>## ✔ ggplot2 3.0.0     ✔ purrr   0.2.5
 ## ✔ tibble  1.4.2     ✔ dplyr   0.7.6
 ## ✔ tidyr   0.8.1     ✔ stringr 1.3.1
 ## ✔ readr   1.1.1     ✔ forcats 0.3.0</code></pre>
-<pre><code>## ── Conflicts ───────────────────────────────────────── tidyverse_conflicts() ──
+<pre><code>## ── Conflicts ────────────────────────────────────────────────────────── tidyverse_conflicts() ──
 ## ✖ dplyr::filter() masks stats::filter()
 ## ✖ dplyr::lag()    masks stats::lag()</code></pre>
+<pre class="r"><code>library(reshape2)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;reshape2&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:tidyr&#39;:
+## 
+##     smiths</code></pre>
 <pre class="r"><code>require(RCurl)</code></pre>
 <pre><code>## Loading required package: RCurl</code></pre>
 <pre><code>## Loading required package: bitops</code></pre>
@@ -297,7 +303,9 @@ $(document).ready(function () {
 <pre class="r"><code>raw_2016 = raw_2016 %&gt;% 
   mutate(cause = classification)
 
-raw_combined = bind_rows(raw_data, raw_2016)
+raw_combined = bind_rows(raw_data, raw_2016) %&gt;% 
+  mutate(month = factor(month, levels = c(&quot;January&quot;, &quot;February&quot;, &quot;March&quot;, &quot;April&quot;, &quot;May&quot;, &quot;June&quot;, &quot;July&quot;, &quot;August&quot;, &quot;September&quot;, &quot;October&quot;, &quot;November&quot;, &quot;December&quot;)),
+         year = as.integer(year))
 
 city_data = city_data %&gt;% 
   mutate(year = 2015)
@@ -310,10 +318,51 @@ city_combined = bind_rows(city_data, city_data_16) %&gt;%
 <pre class="r"><code>top_cities = city_combined %&gt;% 
  top_n(20, total_killed)
 
-ggplot(top_cities, aes(fill = year, x = city_state, y = total_killed)) + geom_bar(position=&quot;dodge&quot;, stat=&quot;identity&quot;) +
+ggplot(top_cities, aes(fill = year, x = city_state, y = total_killed)) + geom_bar(position = &quot;dodge&quot;, stat = &quot;identity&quot;) +
   theme(axis.text.x = element_text(angle = 80, hjust = 1))</code></pre>
 <p><img src="Exploratory_analysis_files/figure-html/plot%20killings-1.png" width="672" /></p>
 <p>Most of the Top 20 for police killings occured in 2016. The top 3 in 2016 also made the Top 20 overall. Looks like # 1 in 2015 would be 6 in 2016.</p>
+</div>
+<div id="cities-in-depth" class="section level1">
+<h1>Cities in Depth</h1>
+<p>Cause of Death by Police.</p>
+<pre class="r"><code>city_depth_data = raw_combined %&gt;% 
+  filter(city %in% c( &quot;Los Angeles&quot;, &quot;Houston&quot;, &quot;Phoenix&quot;, &quot;Chicago&quot;, &quot;San Antonio&quot;)) %&gt;% 
+  mutate(cause = as.factor(cause),
+         armed = as.factor(armed))
+
+plot_cause = city_depth_data %&gt;% 
+  select(city, cause, year) %&gt;% 
+  group_by(city, cause) %&gt;% 
+  summarise(freq = n()) %&gt;% 
+  spread(key = cause, value = freq) 
+
+plot_cause[is.na(plot_cause)] &lt;- 0
+
+plot_cause1 = plot_cause %&gt;% 
+  janitor::clean_names() %&gt;% 
+  gather(key = cause, value = freq, death_in_custody:taser) %&gt;% 
+  ggplot(aes(fill = cause, x = city, y = freq)) + geom_bar(position = &quot;dodge&quot;, stat = &quot;identity&quot;) + labs(x = &quot;City&quot;, y = &quot;Frequency&quot;, title = &quot;Cause of Death by Police Weapon&quot;, caption = &quot;2015-2016&quot;) + scale_fill_brewer(palette = &quot;Set2&quot;) 
+  
+plot_cause1</code></pre>
+<p><img src="Exploratory_analysis_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+<p>Victim armed.</p>
+<pre class="r"><code>plot_armed = city_depth_data %&gt;% 
+  select(city, armed) %&gt;% 
+  group_by(city, armed) %&gt;% 
+  summarise(freq = n()) %&gt;% 
+  spread(key = armed, value = freq) 
+
+plot_armed[is.na(plot_armed)] &lt;- 0
+
+plot_armed1 = plot_armed %&gt;% 
+  janitor::clean_names() %&gt;%
+  rename(unarmed = no) %&gt;% 
+  gather(key = armed, value = freq, firearm:vehicle) %&gt;% 
+  ggplot(aes(fill = armed, x = city, y = freq)) + geom_bar(position = &quot;dodge&quot;, stat = &quot;identity&quot;) + labs(x = &quot;City&quot;, y = &quot;Frequency&quot;, title = &quot;Victim Armed with a Weapon&quot;, caption = &quot;2015-2016&quot;) + scale_fill_brewer(palette = &quot;Set2&quot;) 
+  
+plot_armed1</code></pre>
+<p><img src="Exploratory_analysis_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
 </div>
 
 
