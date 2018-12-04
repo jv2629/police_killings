@@ -61,3 +61,6 @@ mutate(agecat = ifelse(age %in% 0:18, 1, ifelse(age %in% 19:28, 2, ifelse(age %i
        caption = "number of police killings within each age category, Jan-June 2015")
 ```
 
+Regression
+
+
