@@ -43,20 +43,21 @@ homicides_data %>%
   group_by(raceethnicity) %>%
   summarise(total_killed = n()) %>%
   mutate(raceethnicity = forcats::fct_reorder(raceethnicity, total_killed)) %>%
-  ggplot(aes(x = raceethnicity, y = total_killed)) +
+  ggplot(aes(x = raceethnicity, y = total_killed, fill = raceethnicity)) +
   geom_col(size = 3) +
   labs(x = "State", y = "Killings", 
        caption = "number of police killings in each state, Jan-June 2015") +
-  theme(axis.text.x = element_text(angle = 90))
+  theme(axis.text.x = element_text(angle = 90)) +
+  scale_fill_brewer(palette = "BrBG")
+  
 
-homicides_data = homicides_data %>% 
-mutate(agecat = if (age < 19) {1
-} else if (19 < age < 28) {2
-} else if (29 < age < 38) {3
-} else if (39 < age < 48) {4
-} else if (49 < age < 58) {5
-} else if (59 < age < 68) {6
-} else (7))
-
+homicides_data %>% 
+mutate(agecat = ifelse(age %in% 0:18, 1, ifelse(age %in% 19:28, 2, ifelse(age %in% 29:38, 3, ifelse(age %in% 39:48, 4, ifelse(age %in% 49:58, 5, ifelse(age %in% 59:68, 6, 7))))))) %>% 
+  group_by(agecat) %>%
+  summarise(total_killed = n()) %>%
+  ggplot(aes(x = agecat, y = total_killed)) +
+  geom_col(size = 3) +
+  labs(x = "Age Category", y = "Killings", 
+       caption = "number of police killings within each age category, Jan-June 2015")
 ```
 
