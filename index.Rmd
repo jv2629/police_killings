@@ -5,3 +5,18 @@ title: "Factors Associated with Police Killings in America"
 <img src = "data/police_badge_gun.jpg" style = "width:100%"; align="center">
 
 Police killings of citizens has been a point of tension in American culture over the past few years. With recent high profile police killings of African Americans like Eric Garner, Michael Brown Jr., Freddie Gray, Philando Castile and many others, we were interested in looking into what the data tells us about recent police killings. 
+
+```{r echo =FALSE}
+library(tidyverse)
+library(wesanderson)
+
+map_data2 = raw_data %>% 
+  mutate(raceethnicity = as.factor(raceethnicity)) %>% 
+  mutate(raceethnicity = fct_relevel(raceethnicity, c("Native American", "Asian/Pacific Islander", "Unknown", "Hispanic/Latino", "Black", "White"))) %>% 
+  ggplot(aes(x = longitude, y = latitude, colour = raceethnicity)) + 
+  geom_point(alpha = .9) + 
+  scale_color_brewer(palette = "BrBG")
+
+map_data2
+```
+
