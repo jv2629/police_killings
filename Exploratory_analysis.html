@@ -335,7 +335,10 @@ plot_cause[is.na(plot_cause)] &lt;- 0
 plot_cause1 = plot_cause %&gt;% 
   janitor::clean_names() %&gt;% 
   gather(key = cause, value = freq, death_in_custody:taser) %&gt;% 
-  ggplot(aes(fill = cause, x = city, y = freq)) + geom_bar(position = &quot;dodge&quot;, stat = &quot;identity&quot;) + labs(x = &quot;City&quot;, y = &quot;Frequency&quot;, title = &quot;Cause of Death by Police Weapon&quot;)</code></pre>
+  ggplot(aes(fill = cause, x = city, y = freq)) + geom_bar(position = &quot;dodge&quot;, stat = &quot;identity&quot;) + labs(x = &quot;City&quot;, y = &quot;Frequency&quot;, title = &quot;Cause of Death by Police Weapon&quot;) + scale_fill_brewer(palette = &quot;Set2&quot;)
+  
+plot_cause1</code></pre>
+<p><img src="Exploratory_analysis_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
 </div>
 
 

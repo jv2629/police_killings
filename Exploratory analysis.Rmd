@@ -95,9 +95,10 @@ plot_cause[is.na(plot_cause)] <- 0
 plot_cause1 = plot_cause %>% 
   janitor::clean_names() %>% 
   gather(key = cause, value = freq, death_in_custody:taser) %>% 
-  ggplot(aes(fill = cause, x = city, y = freq)) + geom_bar(position = "dodge", stat = "identity") + labs(x = "City", y = "Frequency", title = "Cause of Death by Police Weapon")
+  ggplot(aes(fill = cause, x = city, y = freq)) + geom_bar(position = "dodge", stat = "identity") + labs(x = "City", y = "Frequency", title = "Cause of Death by Police Weapon") + scale_fill_brewer(palette = "Set2")
   
-  
+plot_cause1
+
 
 
 ```
