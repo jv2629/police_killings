@@ -1,0 +1,70 @@
+---
+title: "The Top 5 Cities"
+author: "Jaclyn Verity - jv2629"
+date: "12/3/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r include=FALSE}
+
+library(tidyverse)
+library(reshape2)
+require(RCurl)
+
+raw_data = read_csv(
+        "https://raw.githubusercontent.com/fivethirtyeight/data/master/police-killings/police_killings.csv"
+      )
+raw_2016 = read_csv("./data/the-counted-2016.csv")
+
+raw_2016 = raw_2016 %>% 
+  mutate(cause = classification)
+
+raw_combined = bind_rows(raw_data, raw_2016) %>% 
+  mutate(month = factor(month, levels = c("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December")),
+         year = as.integer(year))
+```
+
+```{r  echo=FALSE}
+city_depth_data = raw_combined %>% 
+  filter(city %in% c( "Los Angeles", "Houston", "Phoenix", "Chicago", "San Antonio")) %>% 
+  mutate(cause = as.factor(cause),
+         armed = as.factor(armed))
+
+plot_cause = city_depth_data %>% 
+  select(city, cause, year) %>% 
+  group_by(city, cause) %>% 
+  summarise(freq = n()) %>% 
+  spread(key = cause, value = freq) 
+
+plot_cause[is.na(plot_cause)] <- 0
+
+plot_cause1 = plot_cause %>% 
+  janitor::clean_names() %>% 
+  gather(key = cause, value = freq, death_in_custody:taser) %>% 
+  ggplot(aes(fill = cause, x = city, y = freq)) + geom_bar(position = "dodge", stat = "identity") + labs(x = "City", y = "Frequency", title = "Cause of Death by Police Weapon", caption = "2015-2016") + scale_fill_brewer(palette = "Set2") 
+  
+plot_cause1
+```
+
+```{r echo=FALSE}
+plot_armed = city_depth_data %>% 
+  select(city, armed) %>% 
+  group_by(city, armed) %>% 
+  summarise(freq = n()) %>% 
+  spread(key = armed, value = freq) 
+
+plot_armed[is.na(plot_armed)] <- 0
+
+plot_armed1 = plot_armed %>% 
+  janitor::clean_names() %>%
+  rename(unarmed = no) %>% 
+  gather(key = armed, value = freq, firearm:vehicle) %>% 
+  ggplot(aes(fill = armed, x = city, y = freq)) + geom_bar(position = "dodge", stat = "identity") + labs(x = "City", y = "Frequency", title = "Victim Armed with a Weapon", caption = "2015-2016") + scale_fill_brewer(palette = "Set2") 
+  
+plot_armed1
+```
+
