@@ -78,6 +78,8 @@ ggplot(top_cities, aes(fill = year, x = city_state, y = total_killed)) + geom_ba
 Most of the Top 20 for police killings occured in 2016. The top 3 in 2016 also made the Top 20 overall. Looks like # 1 in 2015 would be 6 in 2016. 
 
 #Cities in Depth
+
+Cause of Death by Police.
 ```{r}
 city_depth_data = raw_combined %>% 
   filter(city %in% c( "Los Angeles", "Houston", "Phoenix", "Chicago", "San Antonio")) %>% 
@@ -95,11 +97,27 @@ plot_cause[is.na(plot_cause)] <- 0
 plot_cause1 = plot_cause %>% 
   janitor::clean_names() %>% 
   gather(key = cause, value = freq, death_in_custody:taser) %>% 
-  ggplot(aes(fill = cause, x = city, y = freq)) + geom_bar(position = "dodge", stat = "identity") + labs(x = "City", y = "Frequency", title = "Cause of Death by Police Weapon") + scale_fill_brewer(palette = "Set2")
+  ggplot(aes(fill = cause, x = city, y = freq)) + geom_bar(position = "dodge", stat = "identity") + labs(x = "City", y = "Frequency", title = "Cause of Death by Police Weapon") + scale_fill_brewer(palette = "Set2") + caption = "2015-2016"
   
 plot_cause1
+```
 
+Victim armed.
+```{r}
+plot_armed = city_depth_data %>% 
+  select(city, armed) %>% 
+  group_by(city, armed) %>% 
+  summarise(freq = n()) %>% 
+  spread(key = armed, value = freq) 
 
+plot_armed[is.na(plot_armed)] <- 0
 
+plot_armed1 = plot_armed %>% 
+  janitor::clean_names() %>% 
+  rename(unarmed = no) %>% 
+  gather(key = armed, value = freq, firearm:vehicle) %>% 
+  ggplot(aes(fill = armed, x = city, y = freq)) + geom_bar(position = "dodge", stat = "identity") + labs(x = "City", y = "Frequency", title = "Victim Armed with a Weapon") + scale_fill_brewer(palette = "Set2") + caption = "2015-2016"
+  
+plot_armed1
 ```
 
