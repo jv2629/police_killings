@@ -5,6 +5,14 @@ navbar:
   right:
     - text: "About"
       href: about.html
+    - text: "Top 5 Cities"
+      href: top_5_cities.html
+    - text: "Time Dependency"
+      href: 
+    - text: "Racial Factors"
+      href: Exploration.html
+    - text: "Income Analysis"
+      href: 
     - icon: fa-envelope fa-lg
       href: mailto:<you@youremail.com>
     - icon: fa-github fa-lg
