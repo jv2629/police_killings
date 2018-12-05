@@ -22,19 +22,19 @@ clean_2015 = raw_data %>%
          year = as.integer(year))
 
 city_depth_data = clean_2015 %>% 
-  filter(city %in% c( "Los Angeles", "Houston", "Phoenix", "Indianapolis", "New York")) %>% 
+  filter(city %in% c( "Los Angeles", "Houston", "Phoenix", "Indianapolis", "New York", "Oklahoma City", "San Francisco", "Tulsa")) %>% 
   mutate(cause = as.factor(cause),
          armed = as.factor(armed))
 ```
 
 
-While we hope to identify patterns across the US, the sample in most cities is relatively small. Here we take an interesting look into the 5 cities with the most police killings in 2015. 
+While we hope to identify patterns across the US, the sample in most cities is relatively small. Here we take an interesting look into the 5 cities with the most police killings in 2015. The Top 5 become the top 8, as Indianapolis, New York, Oklahoma City, San Francisco, and Tulsa all tie for 4th place. 
 
 ```{r  echo=FALSE}
 top_5_cities = city_depth_data %>% 
   group_by(city) %>% 
   summarise(total_killed = n()) %>% 
-  top_n(5, total_killed) %>% 
+  top_n(8, total_killed) %>% 
   arrange(-total_killed) %>%
   rename(City = city) %>% 
   rename(Killed = total_killed) %>% 
@@ -60,7 +60,8 @@ plot_cause1 = plot_cause %>%
   ggplot(aes(fill = cause, x = city, y = freq)) + geom_bar(position = "dodge", stat = "identity") + labs(x = "City", y = "Frequency", title = "Cause of Death by Police Weapon", caption = "Jan-Jun 2015") + scale_fill_brewer(palette = "BrBG") + 
   theme(panel.background = element_rect(fill = "lightblue",
                                 colour = "lightblue",
-                                size = 0.5, linetype = "solid"))
+                                size = 0.5, linetype = "solid")) +
+          theme(axis.text.x = element_text(angle = 80, hjust = 1))
   
 plot_cause1
 ```
@@ -83,7 +84,8 @@ plot_armed1 = plot_armed %>%
   ggplot(aes(fill = armed, x = city, y = freq)) + geom_bar(position = "dodge", stat = "identity") + labs(x = "City", y = "Frequency", title = "Victim Armed with a Weapon", caption = "Jan - Jun 2015") + scale_fill_brewer(palette = "BrBG") +
   theme(panel.background = element_rect(fill = "lightblue",
                                 colour = "lightblue",
-                                size = 0.5, linetype = "solid"))
+                                size = 0.5, linetype = "solid")) +
+  theme(axis.text.x = element_text(angle = 80, hjust = 1))
   
 plot_armed1
 ```
