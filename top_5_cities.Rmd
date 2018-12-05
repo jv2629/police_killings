@@ -22,7 +22,7 @@ clean_2015 = raw_data %>%
          year = as.integer(year))
 
 city_depth_data = clean_2015 %>% 
-  filter(city %in% c( "Los Angeles", "Houston", "Phoenix", "Chicago", "San Antonio")) %>% 
+  filter(city %in% c( "Los Angeles", "Houston", "Phoenix", "Indianapolis", "New York")) %>% 
   mutate(cause = as.factor(cause),
          armed = as.factor(armed))
 ```
