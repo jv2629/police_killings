@@ -122,4 +122,11 @@ plot_armed1 = plot_armed %>%
 plot_armed1
 ```
 
+```{r}
+top_cities = city_data%>% 
+ top_n(5, total_killed) %>% 
+  knitr::kable()
+```
+
+
 
