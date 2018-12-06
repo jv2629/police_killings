@@ -40,4 +40,6 @@ homicides_plot = homicides_data %>%
 ggplotly(homicides_plot)
 ```
 
+----------------------------------------------------------------------
 Interact with the plot above to see the cumulative number of killings in each state during the time period provided in the dataset. This information can show which months have the biggest jumps in killings. In the future, we would like to examine and see if the trends stay consistent year to year for each state. 
+----------------------------------------------------------------------
