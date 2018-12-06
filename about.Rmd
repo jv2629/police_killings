@@ -12,5 +12,6 @@ This site was created using:
 
 R version 3.5.1 (2018-07-02) – “Feather Spray” Copyright (C) 2018 The R Foundation for Statistical Computing Platform: x86_64-apple-darwin15.6.0 (64-bit)
 
-A screencast for this project and website can be found at:
-https://www.youtube.com/watch?v=k532lJRW1UM&feature=youtu.be&hd=1&fbclid=IwAR3SNebK_I5IKXHBm2qy1vfKt4jD_WepDs5UqnILhpijzGKRSKZmv4CD35I 
+A screencast for this project and website can be found here:
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/k532lJRW1UM" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe> 
