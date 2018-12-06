@@ -8,7 +8,7 @@ navbar:
     - text: "Top 5 Cities"
       href: top_5_cities.html
     - text: "Time Dependency"
-      href: Time-dependent analysis.html
+      href: Time-dependent_analysis.html
     - text: "Race and Age Analysis"
       href: Exploration.html
     - icon: fa-envelope fa-lg

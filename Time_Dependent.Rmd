@@ -1,7 +1,5 @@
 ---
-title: "Time-dependent analysis"
-author: "Nathalie Fadel"
-date: "11/30/2018"
+title: "Time Dependent Analysis"
 output: html_document
 ---
 
@@ -12,7 +10,7 @@ library(tidyverse)
 ```
 
 #Data import and cleaning  
-```{r}
+```{r, echo = FALSE, message = FALSE}
 
 raw_data = read_csv("https://raw.githubusercontent.com/fivethirtyeight/data/master/police-killings/police_killings.csv") %>%
   janitor::clean_names()
@@ -26,14 +24,14 @@ date_data = clean_data %>%
   mutate(date = paste(month, day, year, sep = "-")) %>%
   mutate(date = as.Date(date, "%m-%d-%Y"))
 ```
-Read in csv file, made month a leveled factor variable, then made year an integer variable. This data was read into figure 1 to be grouped by month. Then, this dataset was changed to make month an integer, created a new date column, and formatted date as numerical month-day-year. This data was then used to make figure 2. 
+We read in the csv file and made month a leveled factor variable. This data was read into figure 1 to be grouped by month. Furthermore, this dataset was then changed to make month into an integer, a new date variable was created, and date was formatted as numerical month-day-year. This data was then used to make figure 2. 
 
 #Plots
-```{r}
+```{r, echo = FALSE}
 clean_data %>%
   group_by(month) %>%
   summarise(total_killed = n()) %>%
-  ggplot(aes(x = month, y=total_killed)) +
+  ggplot(aes(x = month, y = total_killed)) +
   geom_col(size = 3) +
   labs(x = "Month", y = "number", 
        caption = "Fig. 1: Number of police killings by month, Jan-June 2015") 
@@ -41,7 +39,7 @@ clean_data %>%
 date_data %>%
   group_by(date) %>%
   summarise(total_killed = n()) %>%
-  ggplot(aes(x = date, y=total_killed)) +
+  ggplot(aes(x = date, y = total_killed)) +
   geom_line(size = 0.5) +
   labs(x = "date", y = "number", 
        caption = "Fig. 2: Number of police killings over time, Jan-June 2015")
