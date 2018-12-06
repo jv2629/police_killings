@@ -1,7 +1,7 @@
 ---
-title: "Exploratory Analysis"
+title: "Chirag’s Exploration"
 author: "Chirag Shah"
-date: '2018-12-02'
+date: '2018-12-06'
 output: github_document
 ---
 
@@ -11,18 +11,16 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 ```
 
-Time to explore police killings by state and age!
+Time to do some exploration!
 
-```{r, include=FALSE}
+```{r}
 homicides_data = read_csv("https://raw.githubusercontent.com/fivethirtyeight/data/master/police-killings/police_killings.csv") %>%
   janitor::clean_names()
 
 homicides_data = homicides_data %>%
   mutate(month = factor(month, levels = c("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December")),
          year = as.integer(year))
-```
 
-```{r, include=FALSE}
 homicides_data %>%
   group_by(state) %>%
   summarise(total_killed = n()) %>%
@@ -32,11 +30,7 @@ homicides_data %>%
   labs(x = "State", y = "Killings", 
        caption = "number of police killings in each state, Jan-June 2015") +
   theme(axis.text.x = element_text(angle = 90))
-```
 
-The graph above shows the distribution of police killings by state. California has the most killings and Connecticut has the least during this time period. 
-
-```{r, include=FALSE}
 homicides_data %>%
   group_by(state) %>%
   summarise(total_killed = n()) %>%
@@ -44,9 +38,7 @@ homicides_data %>%
   mutate(std_error = stderr()) %>% 
   mutate(upper_bound = mean_killed + 1.96 * std_error,
          lower_bound = mean_killed - 1.96 * std_error)
-```
 
-```{r, include=FALSE}
 homicides_data %>%
   group_by(raceethnicity) %>%
   summarise(total_killed = n()) %>%
