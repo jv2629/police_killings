@@ -196,7 +196,7 @@ $(document).ready(function () {
 </li>
 <li class="dropdown-header">Time Dependency</li>
 <li>
-  <a href="Exploration.html">Racial Factors</a>
+  <a href="Exploration.html">Race and Age Analysis</a>
 </li>
 <li class="dropdown-header">Income Analysis</li>
 <li>
@@ -227,161 +227,38 @@ $(document).ready(function () {
 </div>
 
 
-<p>Time to do some exploration!</p>
-<pre class="r"><code>homicides_data = read_csv(&quot;https://raw.githubusercontent.com/fivethirtyeight/data/master/police-killings/police_killings.csv&quot;) %&gt;%
-  janitor::clean_names()</code></pre>
-<pre><code>## Parsed with column specification:
-## cols(
-##   .default = col_character(),
-##   day = col_integer(),
-##   year = col_integer(),
-##   latitude = col_double(),
-##   longitude = col_double(),
-##   state_fp = col_integer(),
-##   county_fp = col_integer(),
-##   tract_ce = col_integer(),
-##   geo_id = col_double(),
-##   county_id = col_integer(),
-##   pop = col_integer(),
-##   h_income = col_integer(),
-##   county_income = col_integer(),
-##   comp_income = col_double(),
-##   county_bucket = col_integer(),
-##   nat_bucket = col_integer(),
-##   urate = col_double(),
-##   college = col_double()
-## )</code></pre>
-<pre><code>## See spec(...) for full column specifications.</code></pre>
-<pre class="r"><code>homicides_data = homicides_data %&gt;%
-  mutate(month = factor(month, levels = c(&quot;January&quot;, &quot;February&quot;, &quot;March&quot;, &quot;April&quot;, &quot;May&quot;, &quot;June&quot;, &quot;July&quot;, &quot;August&quot;, &quot;September&quot;, &quot;October&quot;, &quot;November&quot;, &quot;December&quot;)),
-         year = as.integer(year))
-
-homicides_data %&gt;%
-  group_by(state) %&gt;%
-  summarise(total_killed = n()) %&gt;%
-  mutate(state = forcats::fct_reorder(state, total_killed)) %&gt;%
-  ggplot(aes(x = state, y = total_killed)) +
-  geom_col(size = 3) +
-  labs(x = &quot;State&quot;, y = &quot;Killings&quot;, 
-       caption = &quot;number of police killings in each state, Jan-June 2015&quot;) +
-  theme(axis.text.x = element_text(angle = 90))</code></pre>
-<p><img src="Exploration_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
-<pre class="r"><code>homicides_data %&gt;%
-  group_by(state) %&gt;%
-  summarise(total_killed = n()) %&gt;%
-  summarise(mean_killed = mean(total_killed)) %&gt;% 
-  mutate(std_error = stderr()) %&gt;% 
-  mutate(upper_bound = mean_killed + 1.96 * std_error,
-         lower_bound = mean_killed - 1.96 * std_error)</code></pre>
-<pre><code>## # A tibble: 1 x 4
-##   mean_killed std_error upper_bound lower_bound
-##         &lt;dbl&gt;     &lt;int&gt;       &lt;dbl&gt;       &lt;dbl&gt;
-## 1        9.94         2        13.9        6.02</code></pre>
-<pre class="r"><code>homicides_data %&gt;%
-  group_by(raceethnicity) %&gt;%
-  summarise(total_killed = n()) %&gt;%
-  mutate(raceethnicity = forcats::fct_reorder(raceethnicity, total_killed)) %&gt;%
-  ggplot(aes(x = raceethnicity, y = total_killed, fill = raceethnicity)) +
-  geom_col(size = 3) +
-  labs(x = &quot;State&quot;, y = &quot;Killings&quot;, 
-       caption = &quot;number of police killings in each state, Jan-June 2015&quot;) +
-  theme(axis.text.x = element_text(angle = 90)) +
-  scale_fill_brewer(palette = &quot;BrBG&quot;)</code></pre>
-<p><img src="Exploration_files/figure-html/unnamed-chunk-1-2.png" width="672" /></p>
-<pre class="r"><code>homicides_data %&gt;% 
-mutate(agecat = ifelse(age %in% 0:18, 1, ifelse(age %in% 19:28, 2, ifelse(age %in% 29:38, 3, ifelse(age %in% 39:48, 4, ifelse(age %in% 49:58, 5, ifelse(age %in% 59:68, 6, 7))))))) %&gt;% 
-  group_by(agecat) %&gt;%
-  summarise(total_killed = n()) %&gt;%
-  ggplot(aes(x = agecat, y = total_killed)) +
-  geom_col(size = 3) +
-  labs(x = &quot;Age Category&quot;, y = &quot;Killings&quot;, 
-       caption = &quot;number of police killings within each age category, Jan-June 2015&quot;)</code></pre>
-<p><img src="Exploration_files/figure-html/unnamed-chunk-1-3.png" width="672" /></p>
-<p>Regression</p>
-<pre class="r"><code>homicides_data %&gt;% 
-mutate(share_white = as.numeric(share_white)) %&gt;% 
-mutate(neighborhood = ifelse(share_white %in% 50:100, 0, 1)) %&gt;% 
-  ##0 represents a majority white neighborhood, 1 represents a majority other race neighborhood
-  group_by(neighborhood) %&gt;%
-  summarise(total_killed = n()) %&gt;%
-  ggplot(aes(x = neighborhood, y = total_killed)) +
-  geom_col(size = 3) +
-  labs(x = &quot;Neighborhood&quot;, y = &quot;Killings&quot;, 
-       caption = &quot;number of police killings within white and non-white neighborhoods, Jan-June 2015&quot;)</code></pre>
-<pre><code>## Warning in evalq(as.numeric(share_white), &lt;environment&gt;): NAs introduced by
-## coercion</code></pre>
+<div id="time-to-explore-police-killings-by-state-and-age" class="section level2">
+<h2>Time to explore police killings by state and age!</h2>
 <p><img src="Exploration_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
-<pre class="r"><code>state_models = homicides_data %&gt;% 
-  mutate(share_white = as.numeric(share_white)) %&gt;% 
-  mutate(neighborhood = ifelse(share_white %in% 50:100, 0, 1)) %&gt;% 
-  ##0 represents a majority white neighborhood, 1 represents a majority other race neighborhood
-  mutate(cause_cat = ifelse(cause == &quot;gunshot&quot;, 1, 0)) %&gt;% 
-  ##1 represents gunshot, 0 represents other 
-  mutate(armed_cat = ifelse(armed == &quot;Firearm&quot;, 1, 0)) %&gt;% 
-  ##1 represents armed with Firearm, 0 represents armed with other or unarmed
-  mutate(p_income = as.numeric(p_income)) %&gt;%
-  mutate(thousands_p_income = p_income/10000) %&gt;% 
-  group_by(state) %&gt;% 
-  ##group by state because we want each distinct city to have a model
-  nest() %&gt;% 
-    mutate(logit_neighborhood = map(data, ~glm(neighborhood ~ cause_cat + armed_cat + thousands_p_income, family = binomial, data = .x)), 
-         logit_neighborhood = map(logit_neighborhood, broom::tidy)) %&gt;% 
-  select(-data) %&gt;% 
-  unnest() %&gt;% 
-  ##using nest and unnest to map the model for all distinct cities in the dataset
-  mutate(odds_ratio = exp(estimate), 
-         lower_bound = exp(estimate - 1.96*std.error), 
-         upper_bound = exp(estimate + 1.96*std.error))</code></pre>
-<pre><code>## Warning in evalq(as.numeric(share_white), &lt;environment&gt;): NAs introduced by
-## coercion</code></pre>
-<pre><code>## Warning in evalq(as.numeric(p_income), &lt;environment&gt;): NAs introduced by
-## coercion</code></pre>
-<pre><code>## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-
-## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-
-## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-
-## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred</code></pre>
-<pre><code>## Warning: glm.fit: algorithm did not converge</code></pre>
-<pre><code>## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred</code></pre>
-<pre><code>## Warning: glm.fit: algorithm did not converge</code></pre>
-<pre><code>## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred</code></pre>
-<pre class="r"><code>  ##defining odds ratio and upper and lower bounds for the 95% confidence interval</code></pre>
-<pre class="r"><code>state_models %&gt;% 
-  filter(term == &quot;thousands_p_income&quot;) %&gt;% 
-  ##selecting the parameter we want
-  select(odds_ratio, lower_bound, upper_bound, state) %&gt;% 
-  mutate(state = forcats::fct_reorder(state, odds_ratio)) %&gt;% 
-  ##ordering by city_state
-  ggplot(aes(x = state, y = odds_ratio)) + 
-  geom_point() </code></pre>
+<p>The graph above shows the distribution of police killings by state. California has the most killings and Connecticut has the least during this time period.</p>
+<table>
+<thead>
+<tr class="header">
+<th align="right">mean_killed</th>
+<th align="right">std_error</th>
+<th align="right">upper_bound</th>
+<th align="right">lower_bound</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">9.936</td>
+<td align="right">2</td>
+<td align="right">13.85617</td>
+<td align="right">6.01617</td>
+</tr>
+</tbody>
+</table>
+<p>On average, there were 9.93 killings per state during the January to June 2015 time period. We are 95% confident that the true average number of killings for this amount/period of time lies between 6.02 and 13.86 per state.</p>
 <p><img src="Exploration_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
-<pre class="r"><code>  ##+ geom_errorbar(aes(ymin = lower_bound, ymax = upper_bound)) + 
-  ##adding error bars to each odds ratio to show the 95% confidence interval for the odds ratio
-  labs(title = &quot;OR&#39;s for being killed in a majority other race neighborhood for a ten thousand dollar increase in average personal income&quot;, 
-       y = &quot;Odds ratio&quot;, 
-       x = &quot;State&quot;) +
-  theme(axis.text.x = element_text(angle = 90))</code></pre>
-<pre><code>## NULL</code></pre>
-<pre class="r"><code>state_models %&gt;% 
-  filter(term == &quot;armed_cat&quot;) %&gt;% 
-  ##selecting the parameter we want
-  select(odds_ratio, lower_bound, upper_bound, state) %&gt;% 
-  mutate(state = forcats::fct_reorder(state, odds_ratio)) %&gt;% 
-  ##ordering by city_state
-  ggplot(aes(x = state, y = odds_ratio)) + 
-  geom_point() </code></pre>
+<p>The graph above shows the number of killings by race and is color coated to match the map showing where killings are localized. We can clearly see that whites make up the greatest number of police killings. While the ranking above may have been expected given America’s population demographics, the actual proportion of police killings are largely unexpected given media coverage of such killings.</p>
 <p><img src="Exploration_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
-<pre class="r"><code>  ##+ geom_errorbar(aes(ymin = lower_bound, ymax = upper_bound)) + 
-  ##adding error bars to each odds ratio to show the 95% confidence interval for the odds ratio
-  labs(title = &quot;OR&#39;s for being killed in a majority other race neighborhood for those who were armed with a firearm compared to those armed with other items or unarmed&quot;, 
-       y = &quot;Odds ratio&quot;, 
-       x = &quot;State&quot;) +
-  theme(axis.text.x = element_text(angle = 90))</code></pre>
-<pre><code>## NULL</code></pre>
-<p>Doesn’t seem like there is enough power to have any substantial results. Upper and lower bounds routinely range from 0 to infinity.</p>
-<p>Therefore create model for overall data irrespective of state.</p>
+<p>In the graph above, the following are the ages that each category represents: Category 1: 18 years old or under Category 2: 19-28 years old Category 3: 29-38 years old Category 4: 39-48 years old Category 5: 49-58 years old Category 6: 59-68 years old Category 7: 69 years old or older</p>
+<p>The majority of individuals who were killed were in the age category from 29-38. The distribution of killings seems relatively normal with respect to age, with the elderly and the very young being killed the least often.</p>
+</div>
+<div id="regression" class="section level2">
+<h2>Regression</h2>
+<p>The regression models that were created for each state didn’t yield any useful results due to the very low power that we had for the analysis. In the future, we hope to cultivate a more extensive dataset for analysis to be done within each state and to allow for interstate comparison. In the code chunk below we have created a model for the overall data irrespective of state with being killed in a majority non-white neighborhood.</p>
 <pre class="r"><code>america_model = homicides_data %&gt;% 
   mutate(share_white = as.numeric(share_white)) %&gt;% 
   mutate(neighborhood = ifelse(share_white %in% 50:100, 0, 1)) %&gt;% 
@@ -392,12 +269,7 @@ mutate(neighborhood = ifelse(share_white %in% 50:100, 0, 1)) %&gt;%
   ##1 represents armed with Firearm, 0 represents armed with other or unarmed
   mutate(p_income = as.numeric(p_income)) %&gt;%
   mutate(thousands_p_income = p_income/10000) %&gt;% 
-  glm(neighborhood ~ cause_cat + armed_cat + thousands_p_income, family = binomial, data = .)</code></pre>
-<pre><code>## Warning in evalq(as.numeric(share_white), &lt;environment&gt;): NAs introduced by
-## coercion</code></pre>
-<pre><code>## Warning in evalq(as.numeric(p_income), &lt;environment&gt;): NAs introduced by
-## coercion</code></pre>
-<pre class="r"><code>##glm(solved ~ victim_sex + victim_race + victim_age, family = binomial, data = .)
+  glm(neighborhood ~ cause_cat + armed_cat + thousands_p_income, family = binomial, data = .)
 
 broom::tidy(america_model) %&gt;% 
   ##tidying data
@@ -433,7 +305,8 @@ broom::tidy(america_model) %&gt;%
 </tr>
 </tbody>
 </table>
-<p>In this model, the range between the upper and lower bounds encompass the null value of 1, thus we cannot say that there is a difference in being killed in a neighborhood that is majority non-white among those who were armed with a firearm vs not armed with a firearm as well as with a $10000 increase in personal income, on average.</p>
+<p>In this model, the range between the upper and lower bounds encompass the null value of 1, thus we cannot say that there is a difference in being killed in a neighborhood that is majority non-white among those who were armed with a firearm vs not armed with a firearm or with a $10000 increase in personal income, on average. The first odds ratio in the table corresponds with the intercept of the model which is largely uninformative (on it’s own) for the relationships that we were looking to evaluate.</p>
+</div>
 
 
 

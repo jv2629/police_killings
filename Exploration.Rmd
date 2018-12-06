@@ -11,9 +11,9 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 ```
 
-Time to explore police killings by state and age!
+##Time to explore police killings by state and age!
 
-```{r, include=FALSE}
+```{r, include = FALSE}
 homicides_data = read_csv("https://raw.githubusercontent.com/fivethirtyeight/data/master/police-killings/police_killings.csv") %>%
   janitor::clean_names()
 
@@ -22,7 +22,7 @@ homicides_data = homicides_data %>%
          year = as.integer(year))
 ```
 
-```{r, include=FALSE}
+```{r, echo = FALSE}
 homicides_data %>%
   group_by(state) %>%
   summarise(total_killed = n()) %>%
@@ -34,31 +34,38 @@ homicides_data %>%
   theme(axis.text.x = element_text(angle = 90))
 ```
 
+
 The graph above shows the distribution of police killings by state. California has the most killings and Connecticut has the least during this time period. 
 
-```{r, include=FALSE}
+```{r, echo = FALSE}
 homicides_data %>%
   group_by(state) %>%
   summarise(total_killed = n()) %>%
   summarise(mean_killed = mean(total_killed)) %>% 
   mutate(std_error = stderr()) %>% 
   mutate(upper_bound = mean_killed + 1.96 * std_error,
-         lower_bound = mean_killed - 1.96 * std_error)
+         lower_bound = mean_killed - 1.96 * std_error) %>% 
+  knitr::kable(digits = 3)
 ```
 
-```{r, include=FALSE}
+On average, there were 9.93 killings per state during the January to June 2015 time period. We are 95% confident that the true average number of killings for this amount/period of time lies between 6.02 and 13.86 per state.
+
+```{r, echo = FALSE}
 homicides_data %>%
   group_by(raceethnicity) %>%
   summarise(total_killed = n()) %>%
   mutate(raceethnicity = forcats::fct_reorder(raceethnicity, total_killed)) %>%
   ggplot(aes(x = raceethnicity, y = total_killed, fill = raceethnicity)) +
   geom_col(size = 3) +
-  labs(x = "State", y = "Killings", 
-       caption = "number of police killings in each state, Jan-June 2015") +
+  labs(x = "Race", y = "Killings", 
+       caption = "number of police killings by race, Jan-June 2015") +
   theme(axis.text.x = element_text(angle = 90)) +
   scale_fill_brewer(palette = "BrBG")
-  
+```
 
+The graph above shows the number of killings by race and is color coated to match the map showing where killings are localized. We can clearly see that whites make up the greatest number of police killings. While the ranking above may have been expected given America's population demographics, the actual proportion of police killings are largely unexpected given media coverage of such killings. 
+
+```{r echo = FALSE, message = FALSE}
 homicides_data %>% 
 mutate(agecat = ifelse(age %in% 0:18, 1, ifelse(age %in% 19:28, 2, ifelse(age %in% 29:38, 3, ifelse(age %in% 39:48, 4, ifelse(age %in% 49:58, 5, ifelse(age %in% 59:68, 6, 7))))))) %>% 
   group_by(agecat) %>%
@@ -69,84 +76,22 @@ mutate(agecat = ifelse(age %in% 0:18, 1, ifelse(age %in% 19:28, 2, ifelse(age %i
        caption = "number of police killings within each age category, Jan-June 2015")
 ```
 
-Regression
-```{r}
-homicides_data %>% 
-mutate(share_white = as.numeric(share_white)) %>% 
-mutate(neighborhood = ifelse(share_white %in% 50:100, 0, 1)) %>% 
-  ##0 represents a majority white neighborhood, 1 represents a majority other race neighborhood
-  group_by(neighborhood) %>%
-  summarise(total_killed = n()) %>%
-  ggplot(aes(x = neighborhood, y = total_killed)) +
-  geom_col(size = 3) +
-  labs(x = "Neighborhood", y = "Killings", 
-       caption = "number of police killings within white and non-white neighborhoods, Jan-June 2015")
-```
+In the graph above, the following are the ages that each category represents:
+Category 1: 18 years old or under
+Category 2: 19-28 years old
+Category 3: 29-38 years old
+Category 4: 39-48 years old
+Category 5: 49-58 years old
+Category 6: 59-68 years old
+Category 7: 69 years old or older
 
-```{r}
-state_models = homicides_data %>% 
-  mutate(share_white = as.numeric(share_white)) %>% 
-  mutate(neighborhood = ifelse(share_white %in% 50:100, 0, 1)) %>% 
-  ##0 represents a majority white neighborhood, 1 represents a majority other race neighborhood
-  mutate(cause_cat = ifelse(cause == "gunshot", 1, 0)) %>% 
-  ##1 represents gunshot, 0 represents other 
-  mutate(armed_cat = ifelse(armed == "Firearm", 1, 0)) %>% 
-  ##1 represents armed with Firearm, 0 represents armed with other or unarmed
-  mutate(p_income = as.numeric(p_income)) %>%
-  mutate(thousands_p_income = p_income/10000) %>% 
-  group_by(state) %>% 
-  ##group by state because we want each distinct city to have a model
-  nest() %>% 
-    mutate(logit_neighborhood = map(data, ~glm(neighborhood ~ cause_cat + armed_cat + thousands_p_income, family = binomial, data = .x)), 
-         logit_neighborhood = map(logit_neighborhood, broom::tidy)) %>% 
-  select(-data) %>% 
-  unnest() %>% 
-  ##using nest and unnest to map the model for all distinct cities in the dataset
-  mutate(odds_ratio = exp(estimate), 
-         lower_bound = exp(estimate - 1.96*std.error), 
-         upper_bound = exp(estimate + 1.96*std.error))
-  ##defining odds ratio and upper and lower bounds for the 95% confidence interval
-```
+The majority of individuals who were killed were in the age category from 29-38. The distribution of killings seems relatively normal with respect to age, with the elderly and the very young being killed the least often.
 
-```{r}
-state_models %>% 
-  filter(term == "thousands_p_income") %>% 
-  ##selecting the parameter we want
-  select(odds_ratio, lower_bound, upper_bound, state) %>% 
-  mutate(state = forcats::fct_reorder(state, odds_ratio)) %>% 
-  ##ordering by city_state
-  ggplot(aes(x = state, y = odds_ratio)) + 
-  geom_point() 
-  ##+ geom_errorbar(aes(ymin = lower_bound, ymax = upper_bound)) + 
-  ##adding error bars to each odds ratio to show the 95% confidence interval for the odds ratio
-  labs(title = "OR's for being killed in a majority other race neighborhood for a ten thousand dollar increase in average personal income", 
-       y = "Odds ratio", 
-       x = "State") +
-  theme(axis.text.x = element_text(angle = 90))
-```
+##Regression
 
-```{r}
-state_models %>% 
-  filter(term == "armed_cat") %>% 
-  ##selecting the parameter we want
-  select(odds_ratio, lower_bound, upper_bound, state) %>% 
-  mutate(state = forcats::fct_reorder(state, odds_ratio)) %>% 
-  ##ordering by city_state
-  ggplot(aes(x = state, y = odds_ratio)) + 
-  geom_point() 
-  ##+ geom_errorbar(aes(ymin = lower_bound, ymax = upper_bound)) + 
-  ##adding error bars to each odds ratio to show the 95% confidence interval for the odds ratio
-  labs(title = "OR's for being killed in a majority other race neighborhood for those who were armed with a firearm compared to those armed with other items or unarmed", 
-       y = "Odds ratio", 
-       x = "State") +
-  theme(axis.text.x = element_text(angle = 90))
-```
+The regression models that were created for each state didn't yield any useful results due to the very low power that we had for the analysis. In the future, we hope to cultivate a more extensive dataset for analysis to be done within each state and to allow for interstate comparison. In the code chunk below we have created a model for the overall data irrespective of state with being killed in a majority non-white neighborhood. 
 
-Doesn't seem like there is enough power to have any substantial results. Upper and lower bounds routinely range from 0 to infinity. 
-
-Therefore create model for overall data irrespective of state. 
-
-```{r}
+```{r, message = FALSE, warning = FALSE}
 america_model = homicides_data %>% 
   mutate(share_white = as.numeric(share_white)) %>% 
   mutate(neighborhood = ifelse(share_white %in% 50:100, 0, 1)) %>% 
@@ -158,7 +103,6 @@ america_model = homicides_data %>%
   mutate(p_income = as.numeric(p_income)) %>%
   mutate(thousands_p_income = p_income/10000) %>% 
   glm(neighborhood ~ cause_cat + armed_cat + thousands_p_income, family = binomial, data = .)
-##glm(solved ~ victim_sex + victim_race + victim_age, family = binomial, data = .)
 
 broom::tidy(america_model) %>% 
   ##tidying data
@@ -170,4 +114,4 @@ broom::tidy(america_model) %>%
   knitr::kable(digits = 3)
 ```
 
-In this model, the range between the upper and lower bounds encompass the null value of 1, thus we cannot say that there is a difference in being killed in a neighborhood that is majority non-white among those who were armed with a firearm vs not armed with a firearm as well as with a $10000 increase in personal income, on average. 
+In this model, the range between the upper and lower bounds encompass the null value of 1, thus we cannot say that there is a difference in being killed in a neighborhood that is majority non-white among those who were armed with a firearm vs not armed with a firearm or with a $10000 increase in personal income, on average. The first odds ratio in the table corresponds with the intercept of the model which is largely uninformative (on it's own) for the relationships that we were looking to evaluate.

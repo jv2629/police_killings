@@ -9,7 +9,7 @@ navbar:
       href: top_5_cities.html
     - text: "Time Dependency"
       href: 
-    - text: "Racial Factors"
+    - text: "Race and Age Analysis"
       href: Exploration.html
     - text: "Income Analysis"
       href: 
