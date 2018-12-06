@@ -14,7 +14,7 @@ navbar:
     - icon: fa-envelope fa-lg
       href: mailto:<cs3652@cumc.columbia.edu>
     - icon: fa-github fa-lg
-      href: http://github.com/<YOUR_GH_NAME>/
+      href: https://github.com/jv2629/police_killings.github.io
     - text: "Dashboard"
       href: Flexdashboard.html
 output:
