@@ -191,7 +191,17 @@ $(document).ready(function () {
   <a href="about.html">About</a>
 </li>
 <li>
-  <a href="mailto:&lt;you@youremail.com&gt;">
+  <a href="top_5_cities.html">Top 5 Cities</a>
+</li>
+<li>
+  <a href="Time-dependent analysis.html">Time Dependency</a>
+</li>
+<li>
+  <a href="Exploration.html">Race and Age Analysis</a>
+</li>
+<li class="dropdown-header">Income Analysis</li>
+<li>
+  <a href="mailto:&lt;cs3652@cumc.columbia.edu&gt;">
     <span class="fa fa-envelope fa-lg"></span>
      
   </a>
@@ -201,6 +211,9 @@ $(document).ready(function () {
     <span class="fa fa-github fa-lg"></span>
      
   </a>
+</li>
+<li>
+  <a href="Flexdashboard.html">Dashboard</a>
 </li>
       </ul>
     </div><!--/.nav-collapse -->
@@ -221,16 +234,8 @@ $(document).ready(function () {
 <div id="first-look-at-city-level" class="section level1">
 <h1>First look at City level</h1>
 <p>Read in main data set from fivethirtyeight github repository on police killings.</p>
-<pre class="r"><code>library(tidyverse)</code></pre>
-<pre><code>## ── Attaching packages ─────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
-<pre><code>## ✔ ggplot2 3.0.0     ✔ purrr   0.2.5
-## ✔ tibble  1.4.2     ✔ dplyr   0.7.6
-## ✔ tidyr   0.8.1     ✔ stringr 1.3.1
-## ✔ readr   1.1.1     ✔ forcats 0.3.0</code></pre>
-<pre><code>## ── Conflicts ────────────────────────────────────────────────────────── tidyverse_conflicts() ──
-## ✖ dplyr::filter() masks stats::filter()
-## ✖ dplyr::lag()    masks stats::lag()</code></pre>
-<pre class="r"><code>library(reshape2)</code></pre>
+<pre class="r"><code>library(tidyverse)
+library(reshape2)</code></pre>
 <pre><code>## 
 ## Attaching package: &#39;reshape2&#39;</code></pre>
 <pre><code>## The following object is masked from &#39;package:tidyr&#39;:
@@ -238,12 +243,8 @@ $(document).ready(function () {
 ##     smiths</code></pre>
 <pre class="r"><code>require(RCurl)</code></pre>
 <pre><code>## Loading required package: RCurl</code></pre>
-<pre><code>## Loading required package: bitops</code></pre>
-<pre><code>## 
-## Attaching package: &#39;RCurl&#39;</code></pre>
-<pre><code>## The following object is masked from &#39;package:tidyr&#39;:
-## 
-##     complete</code></pre>
+<pre><code>## Warning in library(package, lib.loc = lib.loc, character.only = TRUE,
+## logical.return = TRUE, : there is no package called &#39;RCurl&#39;</code></pre>
 <pre class="r"><code>raw_data = read_csv(
         &quot;https://raw.githubusercontent.com/fivethirtyeight/data/master/police-killings/police_killings.csv&quot;
       )</code></pre>
@@ -363,6 +364,9 @@ plot_armed1 = plot_armed %&gt;%
   
 plot_armed1</code></pre>
 <p><img src="Exploratory_analysis_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<pre class="r"><code>top_cities = city_data%&gt;% 
+ top_n(5, total_killed) %&gt;% 
+  knitr::kable()</code></pre>
 </div>
 
 

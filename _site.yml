@@ -8,14 +8,14 @@ navbar:
     - text: "Top 5 Cities"
       href: top_5_cities.html
     - text: "Time Dependency"
-      href: 
+      href: Time-dependent analysis.html
     - text: "Race and Age Analysis"
       href: Exploration.html
-    - text: "Income Analysis"
-      href: 
     - icon: fa-envelope fa-lg
-      href: mailto:<you@youremail.com>
+      href: mailto:<cs3652@cumc.columbia.edu>
     - icon: fa-github fa-lg
       href: http://github.com/<YOUR_GH_NAME>/
+    - text: "Dashboard"
+      href: Flexdashboard.html
 output:
   html_document
