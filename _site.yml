@@ -9,7 +9,7 @@ navbar:
       href: top_5_cities.html
     - text: "Time Dependency"
       href: Time_Dependent.html
-    - text: "Race and Age Analysis"
+    - text: "State, Race, and Age"
       href: Exploration.html
     - icon: fa-envelope fa-lg
       href: mailto:<cs3652@cumc.columbia.edu>

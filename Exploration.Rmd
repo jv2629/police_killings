@@ -1,5 +1,5 @@
 ---
-title: "Race and Age"
+title: "States, Race, and Age in Killings"
 output: html_document
 ---
 
@@ -9,7 +9,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 ```
 
-##Analysis by State
+###Analysis by State
 
 ```{r, include = FALSE}
 homicides_data = read_csv("https://raw.githubusercontent.com/fivethirtyeight/data/master/police-killings/police_killings.csv") %>%
