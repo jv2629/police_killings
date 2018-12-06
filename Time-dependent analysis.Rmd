@@ -2,7 +2,7 @@
 title: "Time-dependent analysis"
 author: "Nathalie Fadel"
 date: "11/30/2018"
-output: github_document
+output: html_document
 ---
 
 ```{r setup, include=FALSE}
@@ -21,18 +21,22 @@ clean_data = raw_data %>%
   mutate(month = factor(month, levels = c("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December")),
          year = as.integer(year))
 
+date_data = clean_data %>%
+  mutate(month = as.integer(month)) %>%
+  mutate(date = paste(month, day, year, sep = "-")) %>%
+  mutate(date = as.Date(date, "%m-%d-%Y"))
+```
+Read in csv file, made month a leveled factor variable, then made year an integer variable. This data was read into figure 1 to be grouped by month. Then, this dataset was changed to make month an integer, created a new date column, and formatted date as numerical month-day-year. This data was then used to make figure 2. 
+
+#Plots
+```{r}
 clean_data %>%
   group_by(month) %>%
   summarise(total_killed = n()) %>%
   ggplot(aes(x = month, y=total_killed)) +
   geom_col(size = 3) +
   labs(x = "Month", y = "number", 
-       caption = "number of police killings by month, Jan-June 2015") 
-
-date_data = clean_data %>%
-  mutate(month = as.integer(month)) %>%
-  mutate(date = paste(month, day, year, sep = "-")) %>%
-  mutate(date = as.Date(date, "%m-%d-%Y"))
+       caption = "Fig. 1: Number of police killings by month, Jan-June 2015") 
 
 date_data %>%
   group_by(date) %>%
@@ -40,14 +44,8 @@ date_data %>%
   ggplot(aes(x = date, y=total_killed)) +
   geom_line(size = 0.5) +
   labs(x = "date", y = "number", 
-       caption = "number of police killings over time, Jan-June 2015")
+       caption = "Fig. 2: Number of police killings over time, Jan-June 2015")
 
 ```
-
-
-#Plan:
-- Geom_point plot of killings in y axis vs time in x axis
-- Date w highest number of killings (or month), location(s) in which they occurred
-- Density plot of killings over time
-- Map of killings w date
-- If counties/states have multiple, single these out
+  
+As we can see from figures 1 and 2, March 2015 had the highest number of killings out of this 6 month time period, peaking late in the month. 
