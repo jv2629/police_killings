@@ -9,7 +9,6 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 ```
 
-#Data import and cleaning  
 ```{r, echo = FALSE, message = FALSE}
 
 raw_data = read_csv("https://raw.githubusercontent.com/fivethirtyeight/data/master/police-killings/police_killings.csv") %>%
