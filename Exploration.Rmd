@@ -1,5 +1,4 @@
 ---
-title: "Exploratory Analysis"
 output: html_document
 ---
 
@@ -9,7 +8,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 ```
 
-##Time to explore police killings by state and age!
+##Analysis by State, Race, and Age Group
 
 ```{r, include = FALSE}
 homicides_data = read_csv("https://raw.githubusercontent.com/fivethirtyeight/data/master/police-killings/police_killings.csv") %>%
