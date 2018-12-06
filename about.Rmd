@@ -5,3 +5,9 @@ title: "About"
 ### Final Project for Data Science Course
 
 This data analysis was created by graduate students at the Mailman School of Public Health, taking the Data Science Course - Nathalie Fadel, Chirag Shahs, Jeanette Shekelle, Jaclyn Verity.
+
+This website was made on R Markdown and is hosted on Github. The source code can be found at: https://github.com/jv2629/police_killings.github.io
+
+This site was created using:
+
+R version 3.5.1 (2018-07-02) – “Feather Spray” Copyright (C) 2018 The R Foundation for Statistical Computing Platform: x86_64-apple-darwin15.6.0 (64-bit)

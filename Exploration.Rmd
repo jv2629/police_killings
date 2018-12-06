@@ -1,7 +1,5 @@
 ---
 title: "Exploratory Analysis"
-author: "Chirag Shah"
-date: '2018-12-02'
 output: html_document
 ---
 

@@ -12,6 +12,7 @@ library(tidyverse)
 library(viridis)
 library(plotly)
 library(wesanderson)
+library(ggplot2)
 ```
 
 ```{r, include = FALSE, message = FALSE, echo = FALSE}
@@ -28,12 +29,15 @@ Column {data-width=1000}
 
 ### Cumulative Killings in Each State
 
-```{r}
-homicides_data = homicides_data %>%
-  group_by(month) %>% 
+```{r, echo = FALSE}
+homicides_plot = homicides_data %>%
+  group_by(state, month) %>% 
   summarise(total_killed = n()) %>% 
   mutate(total_killed = cumsum(total_killed)) %>%
-  plot_ly(x = ~month, y = ~total_killed, type = "line", mode = "markers",
-          alpha = .5,
-          color = ~state)
+  ggplot(aes(x = month, y = total_killed, color = state)) +
+  geom_point(alpha = 0.5)
+
+ggplotly(homicides_plot)
 ```
+
+Interact with the plot above to see the cumulative number of killings in each state during the time period provided in the dataset. This information can show which months have the biggest jumps in killings. In the future, we would like to examine and see if the trends stay consistent year to year for each state. 
